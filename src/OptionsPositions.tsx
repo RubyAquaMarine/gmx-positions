@@ -100,7 +100,7 @@ const OptionsChart = () => {
   return (
     // <ResponsiveContainer width={1000}>
     <AreaChart
-      width={1700}
+      width={1500}
       height={900}
       data={formattedData}
       margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
