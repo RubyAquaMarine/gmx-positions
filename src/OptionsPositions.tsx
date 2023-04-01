@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import {
   AreaChart,
   Area,
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
 } from "recharts";
 import Dexie from "dexie";
 import { fetchLongAndShortPositions } from "./helpers";
@@ -39,49 +36,49 @@ const OptionsChart = () => {
   });
 
   const fetchData = async () => {
-    try {
-      const { availableLongAmountParsed, availableShortAmountParsed } =
-        await fetchLongAndShortPositions();
-      // Save fetched data to IndexedDB with timestamp
-      await db.data.add({
-        timestamp: Date.now(),
-        longAmount: availableLongAmountParsed,
-        shortAmount: availableShortAmountParsed,
-      });
+    const { availableLongAmountParsed, availableShortAmountParsed } =
+    await fetchLongAndShortPositions();
+    // Save fetched data to IndexedDB with timestamp
+    await db.data.add({
+      timestamp: Date.now(),
+      longAmount: availableLongAmountParsed,
+      shortAmount: availableShortAmountParsed,
+    });
 
-      // Update chart data
-      setChartData((prevData) => [
-        ...prevData,
-        {
-          timestamp: Date.now(),
-          longAmount: availableLongAmountParsed,
-          shortAmount: availableShortAmountParsed,
-        } as ChartData,
-      ]);
-    } catch {
-      console.error("Error Fetching Data");
-      // Use Stored Data
-      const chartData = await (
-        await db.data.toArray()
-      ).map(
-        (item) =>
-          ({
-            timestamp: item.timestamp,
-            longAmount: item.longAmount,
-            shortAmount: item.shortAmount,
-          } as ChartData)
-      );
-      setChartData(chartData);
-    }
+    // Update chart data
+    // setChartData((prevData) => [
+    //   ...prevData,
+    //   {
+    //     timestamp: Date.now(),
+    //     longAmount: availableLongAmountParsed,
+    //     shortAmount: availableShortAmountParsed,
+    //   } as ChartData,
+    // ]);
   };
+
+  const updateChart = async () => {
+    const chartData = await (
+      await db.data.toArray()
+    ).map(
+      (item) =>
+        ({
+          timestamp: item.timestamp,
+          longAmount: item.longAmount,
+          shortAmount: item.shortAmount,
+        } as ChartData)
+    );
+    setChartData(chartData);
+  }
 
   useEffect(() => {
     // Fetch initial data
     fetchData();
+    updateChart();
 
     // Set up an interval to fetch data every 3 minutes
     const interval = setInterval(() => {
       fetchData();
+      updateChart();
     }, 180000);
 
     // Clean up the interval on unmount
@@ -98,7 +95,6 @@ const OptionsChart = () => {
   }));
 
   return (
-    // <ResponsiveContainer width={1000}>
     <AreaChart
       width={1500}
       height={900}
@@ -129,7 +125,6 @@ const OptionsChart = () => {
         strokeWidth={8}
       />
     </AreaChart>
-    // </ResponsiveContainer
   );
 };
 
