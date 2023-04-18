@@ -31,6 +31,8 @@ const OptionsChart = () => {
     data: Dexie.Table<OptionsData, number>;
   };
 
+  
+
   db.version(1).stores({
     data: "++id, timestamp, longAmount, shortAmount",
   });
@@ -105,9 +107,11 @@ const OptionsChart = () => {
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis
         dataKey="timestamp"
-        label={{ value: "Timestamp", position: "bottom" }}
+      //  label={{ value: "Timestamp", position: "bottom" }}
       />
-      <YAxis label={{ value: "Amount", angle: -90, position: "bottom" }} />
+      <YAxis 
+     // label={{ value: "Amount", angle: -90, position: "bottom" }} 
+    />
       <Tooltip />
       <Legend />
       <Area
